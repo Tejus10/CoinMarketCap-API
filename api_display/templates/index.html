@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href='https://fonts.googleapis.com/css?family=Roboto:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="{% static 'api_display/style.css' %}">
+    <link rel="stylesheet" href="{% static 'api_display/table.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'api_display/main.css' %}">
+    <title>CoinMarketCap Fetcher</title>
+</head>
+<body>
+    <!-- <h1>Cryptocurrency Data</h1> -->
+    <div class="text-center pb-16 mb-16 border-bottom">
+      <h1 class="h1 text-dark mt-8">Cryptocurrency Data</h1>
+    </div>
+    <form>
+        <input type="number" name="percent_change_24h_min" placeholder="Enter 24h min Percentage Change">
+        <input type="number" name="percent_change_24h_max" placeholder="Enter 24h max Percentage Change">
+        <input type="number" name="percent_change_7d_min" placeholder="Enter 7d min Percentage Change">
+        <input type="number" name="percent_change_7d_max" placeholder="Enter 7d max Percentage Change">
+        <input type="number" name="volume_24h" placeholder="Enter 24h Trading Volume (in USD)">
+        <button type="submit" class="btn btn-primary">Fetch Data</button>
+    </form>
+
+    <!-- <form>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">Enter 24h min Percentage Change</label>
+          <input type="number" class="form-control" name="percent_change_24h_min">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">Enter 24h max Percentage Change</label>
+          <input type="number" class="form-control" name="percent_change_24h_min">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">Enter 7d min Percentage Change</label>
+          <input type="number" class="form-control" name="percent_change_7d_min">
+        </div>
+        <div class="form-group col-md-6">
+          <label for="inputEmail4">Enter 7d max Percentage Change</label>
+          <input type="number" class="form-control" name="percent_change_7d_min">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="inputAddress">Enter 24h Trading Volume (in USD)</label>
+        <input type="number" class="form-control" name="volume_24h">
+      </div>
+      <button type="submit" class="btn btn-primary">Fetch Data</button>
+    </form> -->
+
+
+    <!-- <section class="position-relative bg-dark py-24 py-md-40"> -->
+      <!-- <div class="container pb-24 border-bottom">
+        <div class="text-center pb-16 mb-16 border-bottom">
+          <h2 class="h3 text-white mt-8">Cryptocurrency Data</h2>
+        </div>
+        <div class="table-responsive mb-20">
+          <table class="table table-dark table-borderless" id="sortTable" style="min-width: max-content;">
+            <thead>
+              <tr>
+                <th class="pb-12 text-secondary-light">Name</th>
+                <th class="pb-12 text-secondary-light">Symbol</th>
+                <th class="pb-12 text-secondary-light">Price (USD)</th>
+                <th class="pb-12 text-secondary-light">Percentage Change in 24hr</th>
+                <th class="pb-12 text-secondary-light">Trading Volume in 24hr (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in last24hrdata %} 
+              <tr>
+                <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_24h }}</td>
+                <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+              </tr>
+                {% endfor %} 
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-end">
+          <div class="d-flex align-items-center mw-xs pe-12">
+            <p class="h3 text-white mb-0">{{ total_24hr_data }}</p>
+            <p class="ms-6 text-white mb-0"> coins found in 24hr</p>
+          </div>
+        </div>
+        <div class="table-responsive mb-20">
+          <table class="table table-dark table-borderless" style="min-width: max-content;">
+            <thead>
+              <tr>
+                <th class="pb-12 text-secondary-light">Name</th>
+                <th class="pb-12 text-secondary-light">Symbol</th>
+                <th class="pb-12 text-secondary-light">Price (USD)</th>
+                <th class="pb-12 text-secondary-light">Percentage Change in 7d</th>
+                <th class="pb-12 text-secondary-light">Trading Volume in 7d (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in last7ddata %} 
+              <tr>
+                <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_7d }}</td>
+                <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+              </tr>
+                {% endfor %} 
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-end">
+          <div class="d-flex align-items-center mw-xs pe-12">
+            <p class="h3 text-white mb-0">{{ total_7d_data }}</p>
+            <p class="ms-6 text-white mb-0"> coins found in 7d</p>
+          </div>
+        </div>
+        <div class="table-responsive mb-20">
+          <table class="table table-dark table-borderless" style="min-width: max-content;">
+            <thead>
+              <tr>
+                <th class="pb-12 text-secondary-light">Name</th>
+                <th class="pb-12 text-secondary-light">Symbol</th>
+                <th class="pb-12 text-secondary-light">Price (USD)</th>
+                <th class="pb-12 text-secondary-light">Percentage Change in 24hr</th>
+                <th class="pb-12 text-secondary-light">Percentage Change in 7d</th>
+                <th class="pb-12 text-secondary-light">Trading Volume in 24hr (USD)</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in both7d24hr %} 
+              <tr>
+                <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_24h }}</td>
+                <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_7d }}</td>
+                <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+              </tr>
+                {% endfor %} 
+            </tbody>
+          </table>
+        </div>
+        <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-end">
+          <div class="d-flex align-items-center mw-xs pe-12">
+            <p class="h3 text-white mb-0">{{ total_both_data }} </p>
+            <p class="ms-6 text-white mb-0"> coins found in 24hr and 7d</p>
+          </div>
+        </div>
+      </div> -->
+      <div class ='container'>
+        <div class="cards-list">
+            <div class="card 1">
+              <div class="card_image"> <img src="{% static 'api_display/graph-background.jpg' %}" /> </div>
+              <div class="card_title title-white">
+                <h2 style="color: white">{{ total_24hr_data }}</h2>
+                <p>Coins in 24hr</p>
+              </div>
+            </div>
+
+            <div class="card 1">
+              <div class="card_image"> <img src="{% static 'api_display/graph-background.jpg' %}" /> </div>
+              <div class="card_title title-white">
+                <h2 style="color: white">{{ total_7d_data }}</h2>
+                <p>Coins in 7d</p>
+              </div>
+            </div>
+
+            <div class="card 1">
+              <div class="card_image"> <img src="{% static 'api_display/graph-background.jpg' %}" /> </div>
+              <div class="card_title title-white">
+                <h2 style="color: white">{{ total_both_data }}</h2>
+                <p>Coins in Both</p>
+              </div>
+            </div>
+        </div>
+
+
+        <h2 class="h2 text-center">24hr Trending Coins</h2>
+        <table class="tdtd table table-dark table-striped table-hover table-sm" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">Symbol</th>
+                <th class="th-sm">Price (USD)</th>
+                <th class="th-sm">Percentage Change in 24hr</th>
+                <th class="th-sm">Trading Volume in 24hr (USD)</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            {% if last24hrdata %}
+                {% for item in last24hrdata %} 
+                  <tr>
+                    <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                    <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_24h }}</td>
+                    <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+                  </tr>
+                {% endfor %}     
+            {% else %}
+                <tr><th colspan="5">No trending coin in 24hr</th></tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+
+        <h2 class="h2 text-center">7d Trending Coins</h2>
+        <table class="tdtd table table-dark table-striped table-hover table-sm" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">Symbol</th>
+                <th class="th-sm">Price (USD)</th>
+                <th class="th-sm">Percentage Change in 7d</th>
+                <th class="th-sm">Trading Volume in 7d (USD)</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            {% if last7ddata %}
+                {% for item in last7ddata %} 
+                  <tr>
+                    <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                    <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_7d }}</td>
+                    <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+                  </tr>
+                {% endfor %}     
+            {% else %}
+                <tr><th colspan="5">No trending coin in 7d</th></tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+
+        <h2 class="h2 text-center">24hr and 7d Trending Coins</h2>
+        <table class="tdtd table table-dark table-striped table-hover table-sm" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+                <th class="th-sm">Name</th>
+                <th class="th-sm">Symbol</th>
+                <th class="th-sm">Price (USD)</th>
+                <th class="th-sm">Percentage Change in 24hr</th>
+                <th class="th-sm">Percentage Change in 7d</th>
+                <th class="th-sm">Trading Volume in 24hr (USD)</th>
+            </tr>
+
+          </thead>
+          <tbody>
+            {% if both7d24hr %}
+                {% for item in both7d24hr %} 
+                  <tr>
+                    <td class="ps-14 py-4 pe-6 bg-secondary rounded-start">{{ item.name }}</td>
+                    <td class="py-4 bg-secondary">{{ item.symbol }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.price }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_24h }}</td>
+                    <td class="py-4 bg-secondary">{{ item.quote.USD.percent_change_7d }}</td>
+                    <td class="pe-14 py-4 bg-secondary rounded-end">{{ item.quote.USD.volume_24h }}</td>
+                  </tr>
+                {% endfor %}     
+            {% else %}
+                <tr><th colspan="6">No trending coin in 24hr and 7d</th></tr>
+            {% endif %}
+          </tbody>
+        </table>
+
+        </div>
+    <!-- </section> -->
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<!-- <script src="https://kit.fontawesome.com/602c9782ac.js" crossorigin="anonymous"></script> -->
+
+<script src="{% static 'api_display/table.js' %}"></script>
+</body>
+</html>
